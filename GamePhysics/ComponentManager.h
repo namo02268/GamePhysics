@@ -2,7 +2,6 @@
 
 #include "EntityMap.h"
 
-
 class BaseComponentManager {
 public:
 	virtual ~BaseComponentManager() {}
@@ -24,11 +23,6 @@ public:
 		m_newInstance++;
 	}
 
-	ComponentType& getComponent(Entity& e) {
-		ComponentInstance instance = m_entityMap.getInstance(e);
-		return *m_componentArray[instance];
-	}
-
 	void removeComponent(Entity& e) {
 		ComponentInstance instance = m_entityMap.getInstance(e);
 		ComponentInstance lastInstance = m_newInstance - 1;
@@ -42,5 +36,10 @@ public:
 		}
 
 		m_newInstance--;
+	}
+
+	ComponentType* getComponent(Entity& e) {
+		ComponentInstance instance = m_entityMap.getInstance(e);
+		return m_componentArray[instance].get();
 	}
 };

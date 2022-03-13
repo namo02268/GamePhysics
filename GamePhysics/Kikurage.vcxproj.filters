@@ -183,6 +183,9 @@
     <ClInclude Include="RigidBodyComponent.h">
       <Filter>ソース ファイル\Components</Filter>
     </ClInclude>
+    <ClInclude Include="CollisionEvent.h">
+      <Filter>ソース ファイル\Systems\Collision</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">

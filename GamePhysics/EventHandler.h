@@ -6,7 +6,7 @@
 
 #include "IdGenerator.h"
 
-class Event {
+struct Event {
 public:
 	virtual ~Event() {}
 };
@@ -24,7 +24,6 @@ private:
 
 template<typename T, typename EventType>
 class MemberFunctionHandler : public HandlerFunctionBase {
-
 	typedef void (T::* MemberFunction)(EventType*);
 
 private:

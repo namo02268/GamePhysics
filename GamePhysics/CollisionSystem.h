@@ -1,12 +1,5 @@
 #pragma once
 #include "System.h"
-#include "CollisionPoints.h"
-
-struct Collision {
-	Entity* ObjA;
-	Entity* ObjB;
-	CollisionPoints Points;
-};
 
 class CollisionSystem : public System {
 private:

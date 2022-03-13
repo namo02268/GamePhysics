@@ -84,14 +84,14 @@ int main() {
 	scene.addComponent<MaterialComponent>(sphere1);
 	scene.addComponent<GUIComponent>(sphere1);
 	scene.addComponent<CollisionComponent>(sphere1, new SphereCollider(glm::vec3(0.0f), 1.0f));
-	scene.addComponent<RigidBodyComponent>(sphere1);
 
 	auto sphere2 = scene.createEntity();
 	scene.addComponent<TransformComponent>(sphere2, glm::vec3(5.0f, 0.0f, 0.0f), glm::vec3(1.0f), glm::vec3(0.0f));
 	scene.addComponent<MeshComponent>(sphere2, ResourceManager::GetMesh("sphere"));
 	scene.addComponent<MaterialComponent>(sphere2);
 	scene.addComponent<GUIComponent>(sphere2);
-	scene.addComponent<CollisionComponent>(sphere2, new PlaneCollider(glm::vec3(0.0f, 1.0f, 0.0f), 0.0f));
+	scene.addComponent<CollisionComponent>(sphere2, new SphereCollider(glm::vec3(0.0f), 1.0f));
+	//	scene.addComponent<CollisionComponent>(sphere2, new PlaneCollider(glm::vec3(0.0f, 1.0f, 0.0f), 0.0f));
 
 	auto sphere3 = scene.createEntity();
 	scene.addComponent<TransformComponent>(sphere3, glm::vec3(8.0f, 0.0f, 0.0f), glm::vec3(1.0f), glm::vec3(0.0f));

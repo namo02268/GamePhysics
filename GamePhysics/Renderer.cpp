@@ -37,22 +37,22 @@ void Renderer::update(float dt) {
 void Renderer::draw() {
 	this->m_shader->Use();
 	for (auto& e : m_entityArray) {
-		auto& transfromComponent = m_parentScene->getComponent<TransformComponent>(e);
-		auto& meshComponent = m_parentScene->getComponent<MeshComponent>(e);
-		auto& materialComponent = m_parentScene->getComponent<MaterialComponent>(e);
+		auto transfromComponent = m_parentScene->getComponent<TransformComponent>(e);
+		auto meshComponent = m_parentScene->getComponent<MeshComponent>(e);
+		auto materialComponent = m_parentScene->getComponent<MaterialComponent>(e);
 
 		// material
-		this->m_shader->SetVector3f("albedo", materialComponent.albedo);
-		this->m_shader->SetFloat("metallic", materialComponent.metallic);
-		this->m_shader->SetFloat("roughness", materialComponent.roughness);
-		this->m_shader->SetFloat("ao", materialComponent.ao);
+		this->m_shader->SetVector3f("albedo", materialComponent->albedo);
+		this->m_shader->SetFloat("metallic", materialComponent->metallic);
+		this->m_shader->SetFloat("roughness", materialComponent->roughness);
+		this->m_shader->SetFloat("ao", materialComponent->ao);
 
 		// model
 		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::translate(model, transfromComponent.position);
-		model = glm::rotate(model, glm::radians(transfromComponent.rotation.z), Zaxis);
-		model = glm::rotate(model, glm::radians(transfromComponent.rotation.y), Yaxis);
-		model = glm::rotate(model, glm::radians(transfromComponent.rotation.x), Xaxis);
+		model = glm::translate(model, transfromComponent->position);
+		model = glm::rotate(model, glm::radians(transfromComponent->rotation.z), Zaxis);
+		model = glm::rotate(model, glm::radians(transfromComponent->rotation.y), Yaxis);
+		model = glm::rotate(model, glm::radians(transfromComponent->rotation.x), Xaxis);
 		/*
 		glm::vec3 Radians = glm::radians(transfromComponent.rotation) - oldRadians;
 		glm::quat q = glm::quat(Radians);
@@ -62,12 +62,12 @@ void Renderer::draw() {
 		model *= glm::toMat4(q);
 		model *= glm::toMat4(glm::quat(glm::radians(transfromComponent.rotation)));
 		*/
-		model = glm::scale(model, transfromComponent.scale);
+		model = glm::scale(model, transfromComponent->scale);
 
 		this->m_shader->SetMatrix4("model", model);
 
-		glBindVertexArray(meshComponent.VAO);
-		glDrawElements(GL_TRIANGLES, meshComponent.mesh->indices.size(), GL_UNSIGNED_INT, 0);
+		glBindVertexArray(meshComponent->VAO);
+		glDrawElements(GL_TRIANGLES, meshComponent->mesh->indices.size(), GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
 	}
 }

@@ -22,8 +22,11 @@ private:
 	std::vector<std::unique_ptr<System>> m_systems;
 
 public:
-	explicit Scene(std::unique_ptr<EntityManager> entityManager, std::unique_ptr<EventHandler> eventHandler)
+	Scene(std::unique_ptr<EntityManager> entityManager, std::unique_ptr<EventHandler> eventHandler)
 		: m_entityManager(std::move(entityManager)), m_eventHandler(std::move(eventHandler)) {};
+	Scene(const Scene&) = delete;
+	Scene& operator=(const Scene&) = delete;
+	~Scene() = default;
 
 	//---------------------------------------------Entity---------------------------------------------//
 	Entity createEntity() { return m_entityManager->createEntity(); }
@@ -93,11 +96,18 @@ public:
 
 	// TODO : [Add] error handling
 	template<typename ComponentType>
-	ComponentType& getComponent(Entity& e) {
+	ComponentType* getComponent(Entity& e) {
 		auto family = getComponentTypeID<ComponentType>();
-		return static_cast<ComponentManager<ComponentType>&>(*m_componentManagers[family]).getComponent(e);
+		if (e.attachedComponent[family]) {
+			return static_cast<ComponentManager<ComponentType>&>(*m_componentManagers[family]).getComponent(e);
+		}
+		else {
+			std::cout << typeid(ComponentType).name() << " does not exist! Entity ID:" << e.GetID() << std::endl;
+			return nullptr;
+		}
 	}
 
+private:
 	void updateComponentMap(Entity& e, ComponentTypeID family) {
 		for (const auto& system : m_systems) {
 			auto componentMap = e.attachedComponent;
