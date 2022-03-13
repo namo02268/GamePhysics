@@ -38,12 +38,9 @@ void GUI::init() {
 	m_componentGUIbit[transformComponentGUI->ID] = true;
 	auto materialComponentGUI = std::make_unique<MaterialComponentGUI>(m_parentScene);
 	m_componentGUIbit[materialComponentGUI->ID] = true;
-	auto motionComponentGUI = std::make_unique<MotionComponentGUI>(m_parentScene);
-	m_componentGUIbit[motionComponentGUI->ID] = true;
 
 	m_componentGUIs[transformComponentGUI->ID] = std::move(transformComponentGUI);
 	m_componentGUIs[materialComponentGUI->ID] = std::move(materialComponentGUI);
-	m_componentGUIs[motionComponentGUI->ID] = std::move(motionComponentGUI);
 }
 
 void GUI::update(float dt) {
@@ -79,8 +76,6 @@ void GUI::draw() {
 				m_parentScene->addComponent<TransformComponent>(e);
 			if (ImGui::Selectable("Material"))
 				m_parentScene->addComponent<MaterialComponent>(e);
-			if (ImGui::Selectable("Motion"))
-				m_parentScene->addComponent<MotionComponent>(e);
 			ImGui::EndPopup();
 		}
 		ImGui::PopID();

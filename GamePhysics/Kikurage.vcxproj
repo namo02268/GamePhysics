@@ -21,6 +21,11 @@
   <ItemGroup>
     <ClInclude Include="CameraSystem.h" />
     <ClInclude Include="CameraComponent.h" />
+    <ClInclude Include="Collider.h" />
+    <ClInclude Include="CollisionComponent.h" />
+    <ClInclude Include="CollisionPoints.h" />
+    <ClInclude Include="CollisionSystem.h" />
+    <ClInclude Include="Physics.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="ComponentGUIs.h" />
     <ClInclude Include="ComponentManager.h" />
@@ -45,13 +50,15 @@
     <ClInclude Include="imgui\imstb_truetype.h" />
     <ClInclude Include="MaterialComponent.h" />
     <ClInclude Include="Mesh.h" />
-    <ClInclude Include="MotionComponent.h" />
-    <ClInclude Include="MotionSystem.h" />
+    <ClInclude Include="CollisionAlgorithm.h" />
+    <ClInclude Include="PlaneCollider.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="ResourceManager.h" />
+    <ClInclude Include="RigidBodyComponent.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="MeshComponent.h" />
+    <ClInclude Include="SphereCollider.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="System.h" />
     <ClInclude Include="Texture2D.h" />
@@ -60,6 +67,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CameraSystem.cpp" />
+    <ClCompile Include="CollisionSystem.cpp" />
+    <ClCompile Include="Physics.cpp" />
     <ClCompile Include="CubaMap.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="GUI.cpp" />
@@ -72,10 +81,11 @@
     <ClCompile Include="imgui\imgui_tables.cpp" />
     <ClCompile Include="imgui\imgui_widgets.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="MotionSystem.cpp" />
+    <ClCompile Include="PlaneCollider.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="SphereCollider.cpp" />
     <ClCompile Include="Texture2D.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>

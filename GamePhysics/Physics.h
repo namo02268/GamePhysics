@@ -1,13 +1,14 @@
 #pragma once
-
+#include <glm/glm.hpp>
 #include "System.h"
 
-class MotionSystem : public System {
+class Physics : public System {
 private:
+	glm::vec3 m_gravity = glm::vec3(0, -9.81f, 0);
 
 public:
-	MotionSystem();
-	~MotionSystem();
+	Physics();
+	~Physics();
 
 	void init() override;
 	void update(float dt) override;

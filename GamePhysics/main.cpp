@@ -20,14 +20,18 @@
 #include "CameraSystem.h"
 #include "IBL.h"
 #include "GUI.h"
-#include "MotionSystem.h"
+#include "Physics.h"
+#include "CollisionSystem.h"
+#include "SphereCollider.h"
+#include "PlaneCollider.h"
 
 #include "CameraComponent.h"
 #include "TransformComponent.h"
 #include "MeshComponent.h"
 #include "MaterialComponent.h"
-#include "MotionComponent.h"
 #include "GUIComponent.h"
+#include "RigidBodyComponent.h"
+#include "CollisionComponent.h"
 
 int main() {
 	Window window(800, 600, "Kikurage");
@@ -46,10 +50,6 @@ int main() {
 	ResourceManager::LoadMeshFromFile("resources/objects/sphere/sphere.obj", "sphere");
 
 	//-----------------------------add systems to scene-----------------------------//
-	// motion system
-	auto motionSystem = std::make_unique<MotionSystem>();
-	scene.addSystem(std::move(motionSystem));
-
 	// camera system
 	auto cameraSystem = std::make_unique<CameraSystem>(&window);
 	cameraSystem->addShader(ResourceManager::GetShader("PBR"));
@@ -64,6 +64,12 @@ int main() {
 	// GUI
 	auto gui = std::make_unique<GUI>(&window);
 	scene.addSystem(std::move(gui));
+	// Physics
+	auto physics = std::make_unique<Physics>();
+	scene.addSystem(std::move(physics));
+	// Collision 
+	auto collisionSystem = std::make_unique<CollisionSystem>();
+	scene.addSystem(std::move(collisionSystem));
 
 	//---------------------------------add entities---------------------------------//
 	// camera
@@ -71,45 +77,24 @@ int main() {
 	scene.addComponent<TransformComponent>(cameraEntity, glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(1.0f), glm::vec3(0.0f));
 	scene.addComponent<CameraComponent>(cameraEntity);
 
-	/*
-	for (int i = 0; i < 20; i++) {
-		for (int j = 0; j < 20; j++) {
-			auto sphere = scene.createEntity();
-			scene.addComponent<TransformComponent>(sphere, glm::vec3(4.0f * i, 0.0f, 4.0f * j), glm::vec3(1.0f), glm::vec3(0.0f));
-			scene.addComponent<MotionComponent>(sphere, glm::vec3(0.0f), 
-														glm::vec3(0.0f), 
-														glm::vec3((float)rand() / RAND_MAX * 50, (float)rand() / RAND_MAX * 50, (float)rand() / RAND_MAX * 50),
-														glm::vec3(0.0f), 
-														glm::vec3(0.0f), 
-														glm::vec3(0.0f));
-			scene.addComponent<MeshComponent>(sphere, ResourceManager::GetMesh("suzanne"));
-			scene.addComponent<MaterialComponent>(sphere, glm::vec3((float)rand() / RAND_MAX, rand() % 2, (float)rand() / RAND_MAX), (float)rand() / RAND_MAX, (float)rand() / RAND_MAX, 1.0f);
-		} 
-	}
-	*/
-
-	// suzanne
-	auto suzanne = scene.createEntity();
-	scene.addComponent<TransformComponent>(suzanne);
-	scene.addComponent<MeshComponent>(suzanne, ResourceManager::GetMesh("suzanne"));
-	scene.addComponent<MaterialComponent>(suzanne);
-	scene.addComponent<MotionComponent>(suzanne);
-	scene.addComponent<GUIComponent>(suzanne);
-
+	// sphere
 	auto sphere1 = scene.createEntity();
 	scene.addComponent<TransformComponent>(sphere1, glm::vec3(2.0f, 0.0f, 0.0f), glm::vec3(1.0f), glm::vec3(0.0f));
 	scene.addComponent<MeshComponent>(sphere1, ResourceManager::GetMesh("sphere"));
 	scene.addComponent<MaterialComponent>(sphere1);
 	scene.addComponent<GUIComponent>(sphere1);
+	scene.addComponent<CollisionComponent>(sphere1, new SphereCollider(glm::vec3(0.0f), 1.0f));
+	scene.addComponent<RigidBodyComponent>(sphere1);
 
 	auto sphere2 = scene.createEntity();
-	scene.addComponent<TransformComponent>(sphere2, glm::vec3(4.0f, 0.0f, 0.0f), glm::vec3(1.0f), glm::vec3(0.0f));
+	scene.addComponent<TransformComponent>(sphere2, glm::vec3(5.0f, 0.0f, 0.0f), glm::vec3(1.0f), glm::vec3(0.0f));
 	scene.addComponent<MeshComponent>(sphere2, ResourceManager::GetMesh("sphere"));
 	scene.addComponent<MaterialComponent>(sphere2);
 	scene.addComponent<GUIComponent>(sphere2);
+	scene.addComponent<CollisionComponent>(sphere2, new PlaneCollider(glm::vec3(0.0f, 1.0f, 0.0f), 0.0f));
 
 	auto sphere3 = scene.createEntity();
-	scene.addComponent<TransformComponent>(sphere3, glm::vec3(6.0f, 0.0f, 0.0f), glm::vec3(1.0f), glm::vec3(0.0f));
+	scene.addComponent<TransformComponent>(sphere3, glm::vec3(8.0f, 0.0f, 0.0f), glm::vec3(1.0f), glm::vec3(0.0f));
 	scene.addComponent<MeshComponent>(sphere3, ResourceManager::GetMesh("sphere"));
 	scene.addComponent<MaterialComponent>(sphere3);
 	scene.addComponent<GUIComponent>(sphere3);
