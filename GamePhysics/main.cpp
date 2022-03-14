@@ -48,6 +48,7 @@ int main() {
 	ResourceManager::LoadShaderFromFile("resources/shaders/background.vert", "resources/shaders/background.frag", nullptr, "backgroundShader");
 	ResourceManager::LoadMeshFromFile("resources/objects/suzanne/suzanne.obj", "suzanne");
 	ResourceManager::LoadMeshFromFile("resources/objects/sphere/sphere.obj", "sphere");
+	ResourceManager::LoadMeshFromFile("resources/objects/plane/plane.obj", "plane");
 
 	//-----------------------------add systems to scene-----------------------------//
 	// camera system
@@ -74,37 +75,52 @@ int main() {
 	//---------------------------------add entities---------------------------------//
 	// camera
 	auto cameraEntity = scene.createEntity();
-	scene.addComponent<TransformComponent>(cameraEntity, glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(1.0f), glm::vec3(0.0f));
+	scene.addComponent<TransformComponent>(cameraEntity, glm::vec3(20.0f, 5.0f, 20.0f), glm::vec3(1.0f), glm::vec3(0.0f));
 	scene.addComponent<CameraComponent>(cameraEntity);
 
+	/*
 	// sphere
 	auto sphere1 = scene.createEntity();
-	scene.addComponent<TransformComponent>(sphere1, glm::vec3(2.0f, 0.0f, 0.0f), glm::vec3(1.0f), glm::vec3(0.0f));
+	scene.addComponent<TransformComponent>(sphere1, glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(1.0f), glm::vec3(0.0f));
 	scene.addComponent<MeshComponent>(sphere1, ResourceManager::GetMesh("sphere"));
 	scene.addComponent<MaterialComponent>(sphere1);
 	scene.addComponent<GUIComponent>(sphere1);
+	scene.addComponent<RigidBodyComponent>(sphere1, true, false);
 	scene.addComponent<CollisionComponent>(sphere1, new SphereCollider(glm::vec3(0.0f), 1.0f));
 
+	// sphere
 	auto sphere2 = scene.createEntity();
-	scene.addComponent<TransformComponent>(sphere2, glm::vec3(5.0f, 0.0f, 0.0f), glm::vec3(1.0f), glm::vec3(0.0f));
+	scene.addComponent<TransformComponent>(sphere2, glm::vec3(0.0f, 6.0f, 0.0f), glm::vec3(1.0f), glm::vec3(0.0f));
 	scene.addComponent<MeshComponent>(sphere2, ResourceManager::GetMesh("sphere"));
 	scene.addComponent<MaterialComponent>(sphere2);
 	scene.addComponent<GUIComponent>(sphere2);
+	scene.addComponent<RigidBodyComponent>(sphere2, true, false);
 	scene.addComponent<CollisionComponent>(sphere2, new SphereCollider(glm::vec3(0.0f), 1.0f));
-	//	scene.addComponent<CollisionComponent>(sphere2, new PlaneCollider(glm::vec3(0.0f, 1.0f, 0.0f), 0.0f));
 
+	// sphere
 	auto sphere3 = scene.createEntity();
-	scene.addComponent<TransformComponent>(sphere3, glm::vec3(8.0f, 0.0f, 0.0f), glm::vec3(1.0f), glm::vec3(0.0f));
+	scene.addComponent<TransformComponent>(sphere3, glm::vec3(0.1f, 10.0f, 0.0f), glm::vec3(1.0f), glm::vec3(0.0f));
 	scene.addComponent<MeshComponent>(sphere3, ResourceManager::GetMesh("sphere"));
 	scene.addComponent<MaterialComponent>(sphere3);
 	scene.addComponent<GUIComponent>(sphere3);
+	scene.addComponent<RigidBodyComponent>(sphere3, true, false);
+	scene.addComponent<CollisionComponent>(sphere3, new SphereCollider(glm::vec3(0.0f), 1.0f));
+	*/
+	// plane
+	auto plane = scene.createEntity();
+	scene.addComponent<TransformComponent>(plane, glm::vec3(0.2f, -3.0f, 0.0f), glm::vec3(3.0f), glm::vec3(0.0f));
+	scene.addComponent<MeshComponent>(plane, ResourceManager::GetMesh("plane"));
+	scene.addComponent<MaterialComponent>(plane);
+	scene.addComponent<GUIComponent>(plane);
+	scene.addComponent<RigidBodyComponent>(plane, false, true);
+	scene.addComponent<CollisionComponent>(plane, new PlaneCollider(glm::vec3(0.0f, 1.0f, 0.0f), 0.0f));
 
 	// init
 	scene.init();
 
 	// timing
 	float deltaTime = 0.0f;
-	float lastFrame = 0.0f;
+	float lastFrame = window.GetTime();
 
 	// then before rendering, configure the viewport to the original framebuffer's screen dimensions
 	int scrWidth, scrHeight;
@@ -117,6 +133,15 @@ int main() {
 		float currentFrame = window.GetTime();
 		deltaTime = currentFrame - lastFrame;
 		if (deltaTime >= 1.0f / 60.0f) {
+			if (window.IsKeyPressed(GLFW_KEY_X)) {
+				auto sphere1 = scene.createEntity();
+				scene.addComponent<TransformComponent>(sphere1, glm::vec3((float)rand() / RAND_MAX * 2, 10.0f, (float)rand() / RAND_MAX * 2), glm::vec3(1.0f), glm::vec3(0.0f));
+				scene.addComponent<MeshComponent>(sphere1, ResourceManager::GetMesh("sphere"));
+				scene.addComponent<MaterialComponent>(sphere1, glm::vec3((float)rand() / RAND_MAX, rand() % 2, (float)rand() / RAND_MAX), (float)rand() / RAND_MAX, (float)rand() / RAND_MAX, 1.0f);
+				scene.addComponent<GUIComponent>(sphere1);
+				scene.addComponent<RigidBodyComponent>(sphere1, true, false);
+				scene.addComponent<CollisionComponent>(sphere1, new SphereCollider(glm::vec3(0.0f), 1.0f));
+			}
 			lastFrame = currentFrame;
 
 			window.Clear();
