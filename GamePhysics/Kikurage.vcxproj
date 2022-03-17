@@ -60,6 +60,7 @@
     <ClInclude Include="Shader.h" />
     <ClInclude Include="MeshComponent.h" />
     <ClInclude Include="SphereCollider.h" />
+    <ClInclude Include="SphereColliderComponent.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="System.h" />
     <ClInclude Include="Texture2D.h" />

@@ -3,4 +3,5 @@
 #include "Component.h"
 
 class GUIComponent : public Component {
+public:
 };

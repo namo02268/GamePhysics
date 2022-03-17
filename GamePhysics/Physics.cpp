@@ -45,53 +45,55 @@ void Physics::onCollisionEvent(CollisionEvent* collision) {
 	auto a_rigid = m_parentScene->getComponent<RigidBodyComponent>(collision->a);
 	auto b_rigid = m_parentScene->getComponent<RigidBodyComponent>(collision->b);
 
-	// position solver
-	glm::vec3 resolution = collision->points.B - collision->points.A;
+	if (a_rigid != nullptr && b_rigid != nullptr) {
+		// position solver
+		glm::vec3 resolution = collision->points.B - collision->points.A;
 
-	if (!a_rigid->isKinematic)
-		a_trans->position -= resolution;
-	if (!b_rigid->isKinematic)
-		b_trans->position += resolution;
+		if (!a_rigid->isKinematic)
+			a_trans->position -= resolution;
+		if (!b_rigid->isKinematic)
+			b_trans->position += resolution;
 
-	// impulse solver
-	auto r_velocity = b_rigid->velocity - a_rigid->velocity;
-	auto n_velocity = glm::dot(r_velocity, collision->points.Normal);
+		// impulse solver
+		auto r_velocity = b_rigid->velocity - a_rigid->velocity;
+		auto n_velocity = glm::dot(r_velocity, collision->points.Normal);
 
-	if (n_velocity >= 0)
-		return;
+		if (n_velocity >= 0)
+			return;
 
-	auto e = a_rigid->restitution * b_rigid->restitution;
-	auto j = -(1.0f + e) * n_velocity / (a_rigid->mass + b_rigid->mass);
-	auto impulse = j * collision->points.Normal;
+		auto e = a_rigid->restitution * b_rigid->restitution;
+		auto j = -(1.0f + e) * n_velocity / (a_rigid->mass + b_rigid->mass);
+		auto impulse = j * collision->points.Normal;
 
-	if (!a_rigid->isKinematic)
-		a_rigid->velocity -= impulse * a_rigid->mass;
-	if (!b_rigid->isKinematic)
-		b_rigid->velocity += impulse * b_rigid->mass;
+		if (!a_rigid->isKinematic)
+			a_rigid->velocity -= impulse * a_rigid->mass;
+		if (!b_rigid->isKinematic)
+			b_rigid->velocity += impulse * b_rigid->mass;
 
-	// friction solver
-	r_velocity = b_rigid->velocity - a_rigid->velocity;
-	n_velocity = glm::dot(r_velocity, collision->points.Normal);
+		// friction solver
+		r_velocity = b_rigid->velocity - a_rigid->velocity;
+		n_velocity = glm::dot(r_velocity, collision->points.Normal);
 
-	glm::vec3 tangent = glm::normalize(r_velocity - n_velocity * collision->points.Normal);
-	if (std::isnan(tangent.x) || std::isnan(tangent.y) || std::isnan(tangent.z)) tangent = glm::vec3(0.0f);
-	auto f_velocity = glm::dot(r_velocity, tangent);
+		glm::vec3 tangent = glm::normalize(r_velocity - n_velocity * collision->points.Normal);
+		if (std::isnan(tangent.x) || std::isnan(tangent.y) || std::isnan(tangent.z)) tangent = glm::vec3(0.0f);
+		auto f_velocity = glm::dot(r_velocity, tangent);
 
-	auto mu = glm::length(glm::vec2(a_rigid->staticFriction, b_rigid->staticFriction));
-	auto f = -f_velocity / (a_rigid->mass + b_rigid->mass);
+		auto mu = glm::length(glm::vec2(a_rigid->staticFriction, b_rigid->staticFriction));
+		auto f = -f_velocity / (a_rigid->mass + b_rigid->mass);
 
-	glm::vec3 friction;
-	if (glm::abs(f) < j * mu) {
-		friction = f * tangent;
+		glm::vec3 friction;
+		if (glm::abs(f) < j * mu) {
+			friction = f * tangent;
 
-	} else {
-		mu = glm::length(glm::vec2(a_rigid->dynamicFriction, b_rigid->dynamicFriction));
-		friction = -j * tangent * mu;
+		}
+		else {
+			mu = glm::length(glm::vec2(a_rigid->dynamicFriction, b_rigid->dynamicFriction));
+			friction = -j * tangent * mu;
+		}
+
+		if (!a_rigid->isKinematic)
+			a_rigid->velocity = a_rigid->velocity - friction * a_rigid->mass;
+		if (!b_rigid->isKinematic)
+			b_rigid->velocity = b_rigid->velocity + friction * b_rigid->mass;
 	}
-
-
-	if (!a_rigid->isKinematic)
-		a_rigid->velocity = a_rigid->velocity - friction * a_rigid->mass;
-	if (!b_rigid->isKinematic)
-		b_rigid->velocity = b_rigid->velocity + friction * b_rigid->mass;
 }

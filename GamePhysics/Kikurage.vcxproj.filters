@@ -186,6 +186,9 @@
     <ClInclude Include="CollisionEvent.h">
       <Filter>ソース ファイル\Systems\Collision</Filter>
     </ClInclude>
+    <ClInclude Include="SphereColliderComponent.h">
+      <Filter>ソース ファイル\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">

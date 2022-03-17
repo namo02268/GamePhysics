@@ -66,8 +66,10 @@ void GUI::draw() {
 	ImGui::Begin("Scene", &open, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
 
 	static int selected = -1;
+	char buf[32];
 	for (int n = 0; n < m_entityArray.size(); n++) {
-		if (ImGui::Selectable(m_entityArray[n].name.c_str(), selected == n)) {
+		sprintf_s(buf, "Entity %d", m_entityArray[n]);
+		if (ImGui::Selectable(buf, selected == n)) {
 			selected = n;
 		}
 	}
@@ -81,9 +83,9 @@ void GUI::draw() {
 	ImGui::PushItemWidth(200);
 
 	if (selected != -1) {
-		ImGui::PushID(m_entityArray[selected].GetID());
+		ImGui::PushID(m_entityArray[selected]);
 		for (int i = 0; i < MAX_COMPONENTS_FAMILY; i++) {
-			if (m_entityArray[selected].attachedComponent[i] && m_componentGUIbit[i]) {
+			if (m_parentScene->getComponentMask(m_entityArray[selected])[i] && m_componentGUIbit[i]) {
 				ImGui::SetNextItemOpen(true, ImGuiCond_Once);
 				m_componentGUIs[i]->draw(m_entityArray[selected]);
 				ImGui::Separator();
