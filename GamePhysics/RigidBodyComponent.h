@@ -10,13 +10,13 @@ public:
 
 	float mass = 0.1f;
 	float restitution = 1.0f;
-	float staticFriction = 0.2f;
 	float dynamicFriction = 0.1f;
+	float staticFriction = 0.2f;
 
 	bool isGravity = false;
-	bool isStatic = false;
+	bool isKinematic = false;
 
 public:
 	RigidBodyComponent() {}
-	RigidBodyComponent(bool isGravity, bool isStatic) : isGravity(isGravity), isStatic(isStatic) {}
+	RigidBodyComponent(bool isGravity, bool isKinematic) : isGravity(isGravity), isKinematic(isKinematic) {}
 };

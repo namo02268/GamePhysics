@@ -4,6 +4,8 @@
 
 #include "TransformComponent.h"
 #include "MaterialComponent.h"
+#include "RigidBodyComponent.h"
+#include "CameraComponent.h"
 
 //----------------------------------------------Transform----------------------------------------------//
 class TransfromComponentGUI : public ComponentGUIBase {
@@ -48,3 +50,47 @@ public:
 	}
 };
 
+//----------------------------------------------RigidBody----------------------------------------------//
+class RigidBodyComponentGUI : public ComponentGUIBase {
+public:
+	RigidBodyComponentGUI(Scene* scene) {
+		m_parentScene = scene;
+		ID = getComponentTypeID<RigidBodyComponent>();
+	}
+
+	void draw(Entity& e) {
+		if (ImGui::TreeNode("RigidBody")) {
+			auto rigidBodyComponent = m_parentScene->getComponent<RigidBodyComponent>(e);
+			ImGui::DragFloat3("Velocity", &rigidBodyComponent->velocity.x, 0.01f);
+			ImGui::DragFloat3("Force", &rigidBodyComponent->force.x, 0.01f);
+			ImGui::DragFloat("Mass", &rigidBodyComponent->mass, 0.1f);
+			ImGui::SliderFloat("Restitution", &rigidBodyComponent->restitution, 0.0f, 1.0f);
+			ImGui::SliderFloat("Dynamic Friction", &rigidBodyComponent->dynamicFriction, 0.0f, 1.0f);
+			ImGui::SliderFloat("Static Friction", &rigidBodyComponent->staticFriction, 0.0f, 1.0f);
+			ImGui::Checkbox("Is Gravity", &rigidBodyComponent->isGravity);
+			ImGui::Checkbox("Is Kinematic", &rigidBodyComponent->isKinematic);
+			if (ImGui::Button("Remove Component"))
+				m_parentScene->removeComponent<RigidBodyComponent>(e);
+			ImGui::TreePop();
+		}
+	}
+};
+
+//----------------------------------------------Camera----------------------------------------------//
+class CameraComponentGUI : public ComponentGUIBase {
+public:
+	CameraComponentGUI(Scene* scene) {
+		m_parentScene = scene;
+		ID = getComponentTypeID<CameraComponent>();
+	}
+
+	void draw(Entity& e) {
+		if (ImGui::TreeNode("Camera")) {
+			auto cameraComponent = m_parentScene->getComponent<CameraComponent>(e);
+			ImGui::DragFloat("Near", &cameraComponent->Near, 0.01f);
+			ImGui::DragFloat("Far", &cameraComponent->Far, 1.0f);
+
+			ImGui::TreePop();
+		}
+	}
+};

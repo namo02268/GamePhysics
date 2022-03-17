@@ -48,9 +48,9 @@ void Physics::onCollisionEvent(CollisionEvent* collision) {
 	// position solver
 	glm::vec3 resolution = collision->points.B - collision->points.A;
 
-	if (!a_rigid->isStatic) 
+	if (!a_rigid->isKinematic)
 		a_trans->position -= resolution;
-	if (!b_rigid->isStatic)
+	if (!b_rigid->isKinematic)
 		b_trans->position += resolution;
 
 	// impulse solver
@@ -64,9 +64,9 @@ void Physics::onCollisionEvent(CollisionEvent* collision) {
 	auto j = -(1.0f + e) * n_velocity / (a_rigid->mass + b_rigid->mass);
 	auto impulse = j * collision->points.Normal;
 
-	if (!a_rigid->isStatic)
+	if (!a_rigid->isKinematic)
 		a_rigid->velocity -= impulse * a_rigid->mass;
-	if (!b_rigid->isStatic)
+	if (!b_rigid->isKinematic)
 		b_rigid->velocity += impulse * b_rigid->mass;
 
 	// friction solver
@@ -76,8 +76,6 @@ void Physics::onCollisionEvent(CollisionEvent* collision) {
 	glm::vec3 tangent = glm::normalize(r_velocity - n_velocity * collision->points.Normal);
 	if (std::isnan(tangent.x) || std::isnan(tangent.y) || std::isnan(tangent.z)) tangent = glm::vec3(0.0f);
 	auto f_velocity = glm::dot(r_velocity, tangent);
-
-
 
 	auto mu = glm::length(glm::vec2(a_rigid->staticFriction, b_rigid->staticFriction));
 	auto f = -f_velocity / (a_rigid->mass + b_rigid->mass);
@@ -92,8 +90,8 @@ void Physics::onCollisionEvent(CollisionEvent* collision) {
 	}
 
 
-	if (!a_rigid->isStatic)
+	if (!a_rigid->isKinematic)
 		a_rigid->velocity = a_rigid->velocity - friction * a_rigid->mass;
-	if (!b_rigid->isStatic)
+	if (!b_rigid->isKinematic)
 		b_rigid->velocity = b_rigid->velocity + friction * b_rigid->mass;
 }
