@@ -22,7 +22,7 @@ void CollisionSystem::init() {
 void CollisionSystem::update(float dt) {
 	for (auto& a : m_entityArray) {
 		for (auto& b : m_entityArray) {
-			if (a == b)
+			if (a.GetID() == b.GetID())
 				break;
 			auto a_trans = m_parentScene->getComponent<TransformComponent>(a);
 			auto b_trans = m_parentScene->getComponent<TransformComponent>(b);

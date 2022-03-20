@@ -4,4 +4,12 @@
 #include <iomanip>
 #include "ECS_def.h"
 
-using Entity = EntityID;
+class Entity {
+private:
+	EntityID m_id;
+
+public:
+	Entity(EntityID id) : m_id(id) {}
+	~Entity() = default;
+	EntityID GetID() { return m_id; }
+};

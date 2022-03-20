@@ -58,12 +58,10 @@ void GUI::draw() {
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
 
-	bool open;
-
 	// Scene GUI
 	ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f));
 	ImGui::SetNextWindowSize(ImVec2(200, parentWindow->GetHeight()));
-	ImGui::Begin("Scene", &open, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+	ImGui::Begin("Scene", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
 
 	static int selected = -1;
 	char buf[32];
@@ -79,11 +77,11 @@ void GUI::draw() {
 	// Component GUI
 	ImGui::SetNextWindowPos(ImVec2(parentWindow->GetWidth() - 400.0f, 0.0f));
 	ImGui::SetNextWindowSize(ImVec2(400.0f, parentWindow->GetHeight()));
-	ImGui::Begin("Inspector", &open, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+	ImGui::Begin("Inspector", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
 	ImGui::PushItemWidth(200);
 
 	if (selected != -1) {
-		ImGui::PushID(m_entityArray[selected]);
+		ImGui::PushID(m_entityArray[selected].GetID());
 		for (int i = 0; i < MAX_COMPONENTS_FAMILY; i++) {
 			if (m_parentScene->getComponentMask(m_entityArray[selected])[i] && m_componentGUIbit[i]) {
 				ImGui::SetNextItemOpen(true, ImGuiCond_Once);
