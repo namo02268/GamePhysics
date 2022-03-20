@@ -26,6 +26,7 @@
     <ClInclude Include="CollisionEvent.h" />
     <ClInclude Include="CollisionPoints.h" />
     <ClInclude Include="CollisionSystem.h" />
+    <ClInclude Include="GUI.h" />
     <ClInclude Include="Physics.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="ComponentGUIs.h" />
@@ -36,8 +37,6 @@
     <ClInclude Include="EntityManager.h" />
     <ClInclude Include="EntityMap.h" />
     <ClInclude Include="EventHandler.h" />
-    <ClInclude Include="GUI.h" />
-    <ClInclude Include="GUIComponent.h" />
     <ClInclude Include="IBL.h" />
     <ClInclude Include="IdGenerator.h" />
     <ClInclude Include="imgui\imconfig.h" />
@@ -53,7 +52,7 @@
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="CollisionAlgorithm.h" />
     <ClInclude Include="PlaneCollider.h" />
-    <ClInclude Include="Renderer.h" />
+    <ClInclude Include="MeshRenderer.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="RigidBodyComponent.h" />
     <ClInclude Include="Scene.h" />
@@ -70,10 +69,10 @@
   <ItemGroup>
     <ClCompile Include="CameraSystem.cpp" />
     <ClCompile Include="CollisionSystem.cpp" />
+    <ClCompile Include="GUI.cpp" />
     <ClCompile Include="Physics.cpp" />
     <ClCompile Include="CubaMap.cpp" />
     <ClCompile Include="glad.c" />
-    <ClCompile Include="GUI.cpp" />
     <ClCompile Include="IBL.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
@@ -84,7 +83,7 @@
     <ClCompile Include="imgui\imgui_widgets.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PlaneCollider.cpp" />
-    <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="MeshRenderer.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="SphereCollider.cpp" />

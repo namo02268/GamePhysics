@@ -1,17 +1,6 @@
 #include "GUI.h"
-#include "Scene.h"
-#include "GUIComponent.h"
-#include "ComponentGUIs.h"
-
 
 void imgui_theme();
-
-GUI::GUI(Window* window) {
-	this->parentWindow = window;
-
-	auto family = getComponentTypeID<GUIComponent>();
-	m_requiredComponent[family] = true;
-}
 
 GUI::~GUI() {
 	// Cleanup
@@ -27,7 +16,7 @@ void GUI::init() {
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
 
 	const char* glsl_version = "#version 330";
-	ImGui_ImplGlfw_InitForOpenGL(parentWindow->GetWindow(), true);
+	ImGui_ImplGlfw_InitForOpenGL(m_parentWindow->GetWindow(), true);
 	ImGui_ImplOpenGL3_Init(glsl_version);
 
 	// imgui configuration
@@ -49,43 +38,54 @@ void GUI::init() {
 	m_componentGUIs[cameraComponentGUI->ID] = std::move(cameraComponentGUI);
 }
 
-void GUI::update(float dt) {
-}
-
-void GUI::draw() {
+void GUI::update() {
 	// Start the Dear ImGui frame
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
 
-	// Scene GUI
+	m_parentWindow->BindFBO();
+	m_parentWindow->Clear();
+}
+
+void GUI::draw() {
+	// Scene Window
+	ImGui::Begin("Scene Window");
+	ImVec2 window_size = ImGui::GetWindowSize();
+	ImGui::Image((void*)(intptr_t)m_parentWindow->getRenderTexture(), window_size, ImVec2(0, 1), ImVec2(1, 0));
+	ImGui::End();
+	m_parentWindow->UnbindFBO();
+
+	// Hierarchy
 	ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f));
-	ImGui::SetNextWindowSize(ImVec2(200, parentWindow->GetHeight()));
+	ImGui::SetNextWindowSize(ImVec2(200, m_parentWindow->GetHeight()));
 	ImGui::Begin("Scene", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+
+	auto& entityArray = m_parentScene->getAllEntityArray();
 
 	static int selected = -1;
 	char buf[32];
-	for (int n = 0; n < m_entityArray.size(); n++) {
-		sprintf_s(buf, "Entity %d", m_entityArray[n]);
+	for (int n = 0; n < entityArray.size(); n++) {
+		sprintf_s(buf, "Entity %d", entityArray[n]);
 		if (ImGui::Selectable(buf, selected == n)) {
 			selected = n;
 		}
 	}
-	
+
 	ImGui::End();
 
 	// Component GUI
-	ImGui::SetNextWindowPos(ImVec2(parentWindow->GetWidth() - 400.0f, 0.0f));
-	ImGui::SetNextWindowSize(ImVec2(400.0f, parentWindow->GetHeight()));
+	ImGui::SetNextWindowPos(ImVec2(m_parentWindow->GetWidth() - 400.0f, 0.0f));
+	ImGui::SetNextWindowSize(ImVec2(400.0f, m_parentWindow->GetHeight()));
 	ImGui::Begin("Inspector", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
 	ImGui::PushItemWidth(200);
 
 	if (selected != -1) {
-		ImGui::PushID(m_entityArray[selected].GetID());
+		ImGui::PushID(entityArray[selected].GetID());
 		for (int i = 0; i < MAX_COMPONENTS_FAMILY; i++) {
-			if (m_parentScene->getComponentMask(m_entityArray[selected])[i] && m_componentGUIbit[i]) {
+			if (m_parentScene->getComponentMask(entityArray[selected])[i] && m_componentGUIbit[i]) {
 				ImGui::SetNextItemOpen(true, ImGuiCond_Once);
-				m_componentGUIs[i]->draw(m_entityArray[selected]);
+				m_componentGUIs[i]->draw(entityArray[selected]);
 				ImGui::Separator();
 			}
 		}
@@ -97,11 +97,11 @@ void GUI::draw() {
 		if (ImGui::BeginPopup("Component"))
 		{
 			if (ImGui::Selectable("Transform"))
-				m_parentScene->addComponent<TransformComponent>(m_entityArray[selected]);
+				m_parentScene->addComponent<TransformComponent>(entityArray[selected]);
 			if (ImGui::Selectable("Material"))
-				m_parentScene->addComponent<MaterialComponent>(m_entityArray[selected]);
+				m_parentScene->addComponent<MaterialComponent>(entityArray[selected]);
 			if (ImGui::Selectable("RigidBody"))
-				m_parentScene->addComponent<RigidBodyComponent>(m_entityArray[selected]);
+				m_parentScene->addComponent<RigidBodyComponent>(entityArray[selected]);
 			ImGui::EndPopup();
 		}
 		ImGui::PopID();

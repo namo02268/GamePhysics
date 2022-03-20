@@ -11,5 +11,5 @@ private:
 public:
 	Entity(EntityID id) : m_id(id) {}
 	~Entity() = default;
-	EntityID GetID() { return m_id; }
+	inline EntityID GetID() { return m_id; }
 };

@@ -1,37 +1,24 @@
 #pragma once
 
-#include <array>
-
-#include "imgui/imgui.h"
-#include "imgui/imgui_impl_glfw.h"
-#include "imgui/imgui_impl_opengl3.h"
-
 #include "System.h"
 #include "Window.h"
+#include "Scene.h"
 #include "ECS_def.h"
 
-class ComponentGUIBase {
-public:
-	ComponentTypeID ID;
-	Scene* m_parentScene;
+#include "ComponentGUIs.h"
 
-public:
-	virtual ~ComponentGUIBase() {}
-	virtual void draw(Entity& e) {}
-};
-
-class GUI : public System {
+class GUI {
 private:
-	Window* parentWindow;
+	Scene* m_parentScene;
+	Window* m_parentWindow;
 	std::array<std::unique_ptr<ComponentGUIBase>, MAX_COMPONENTS_FAMILY> m_componentGUIs;
 	ComponentFamily m_componentGUIbit;
 
 public:
-	GUI(Window* window);
+	GUI(Window* window, Scene* scene) : m_parentWindow(window), m_parentScene(scene) { init(); }
 	~GUI();
 
-	void init() override;
-	void update(float dt) override;
-	void draw() override;
+	void init();
+	void update();
+	void draw();
 };
-

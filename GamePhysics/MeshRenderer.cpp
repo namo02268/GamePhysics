@@ -1,4 +1,4 @@
-#include "Renderer.h"
+#include "MeshRenderer.h"
 #include "Scene.h"
 
 #include "TransformComponent.h"
@@ -11,7 +11,7 @@
 #define Yaxis glm::vec3(0.0, 1.0, 0.0)
 #define Zaxis glm::vec3(0.0, 0.0, 1.0)
 
-Renderer::Renderer(Shader* shader) {
+MeshRenderer::MeshRenderer(Shader* shader) {
 	this->m_shader = shader;
 
 	auto family = getComponentTypeID<TransformComponent>();
@@ -22,19 +22,19 @@ Renderer::Renderer(Shader* shader) {
 	m_requiredComponent[family] = true;
 }
 
-Renderer::~Renderer() {
+MeshRenderer::~MeshRenderer() {
 
 }
 
-void Renderer::init	() {
+void MeshRenderer::init	() {
 
 }
 
-void Renderer::update(float dt) {
+void MeshRenderer::update(float dt) {
 
 }
 
-void Renderer::draw() {
+void MeshRenderer::draw() {
 	this->m_shader->Use();
 	for (auto& e : m_entityArray) {
 		auto transfromComponent = m_parentScene->getComponent<TransformComponent>(e);
@@ -53,15 +53,6 @@ void Renderer::draw() {
 		model = glm::rotate(model, glm::radians(transfromComponent->rotation.z), Zaxis);
 		model = glm::rotate(model, glm::radians(transfromComponent->rotation.y), Yaxis);
 		model = glm::rotate(model, glm::radians(transfromComponent->rotation.x), Xaxis);
-		/*
-		glm::vec3 Radians = glm::radians(transfromComponent.rotation) - oldRadians;
-		glm::quat q = glm::quat(Radians);
-		q = q * oldQuat;
-		oldRadians = glm::radians(transfromComponent.rotation);
-		oldQuat = glm::quat(oldRadians);
-		model *= glm::toMat4(q);
-		model *= glm::toMat4(glm::quat(glm::radians(transfromComponent.rotation)));
-		*/
 		model = glm::scale(model, transfromComponent->scale);
 
 		this->m_shader->SetMatrix4("model", model);

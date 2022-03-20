@@ -1,11 +1,24 @@
 #pragma once
-#include "GUI.h"
 #include "Scene.h"
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glfw.h"
+#include "imgui/imgui_impl_opengl3.h"
 
 #include "TransformComponent.h"
 #include "MaterialComponent.h"
 #include "RigidBodyComponent.h"
 #include "CameraComponent.h"
+
+//----------------------------------------------Base----------------------------------------------//
+class ComponentGUIBase {
+public:
+	ComponentTypeID ID;
+	Scene* m_parentScene;
+
+public:
+	virtual ~ComponentGUIBase() {}
+	virtual void draw(Entity& e) {}
+};
 
 //----------------------------------------------Transform----------------------------------------------//
 class TransfromComponentGUI : public ComponentGUIBase {
