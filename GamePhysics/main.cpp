@@ -4,36 +4,38 @@
 #include <GLFW/glfw3.h>
 
 #define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+#include "stb_image/stb_image.h"
 
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
 
-#include "OpenGLWindow.h"
-#include "Scene.h"
-#include "Shader.h"
-#include "ResourceManager.h"
-#include "EventHandler.h"
+#include "OpenGL/OpenGLWindow.h"
 
-#include "ImGuiLayer.h"
-#include "SceneWindow.h"
-#include "Editor.h"
+#include "ECS/Scene.h"
+#include "ECS/EventHandler.h"
 
-#include "MeshRenderer.h"
-#include "CameraSystem.h"
-#include "IBL.h"
-#include "Physics.h"
-#include "CollisionSystem.h"
-#include "SphereCollider.h"
-#include "PlaneCollider.h"
+#include "Resources/Shader/Shader.h"
+#include "Resources/ResourceManager/ResourceManager.h"
 
-#include "CameraComponent.h"
-#include "TransformComponent.h"
-#include "MeshComponent.h"
-#include "MaterialComponent.h"
-#include "RigidBodyComponent.h"
-#include "CollisionComponent.h"
+#include "GUI/ImGuiLayer.h"
+#include "GUI/SceneWindow.h"
+#include "GUI/Editor.h"
+
+#include "Systems/MeshRenderer/MeshRenderer.h"
+#include "Systems/Camera/CameraSystem.h"
+#include "Systems/IBL/IBL.h"
+#include "Systems/Physics/Physics.h"
+#include "Systems/Collision/CollisionSystem.h"
+#include "Systems/Collision/SphereCollider.h"
+#include "Systems/Collision/PlaneCollider.h"
+
+#include "Components/CameraComponent.h"
+#include "Components/TransformComponent.h"
+#include "Components/MeshComponent.h"
+#include "Components/MaterialComponent.h"
+#include "Components/RigidBodyComponent.h"
+#include "Components/CollisionComponent.h"
 
 int main() {
 	OpenGLWindow window(800, 600, "Kikurage");
