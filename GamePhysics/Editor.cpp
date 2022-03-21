@@ -20,6 +20,7 @@ void Editor::init() {
 void Editor::draw() {
 	// Hierarchy
 	ImGui::Begin("Hierarchy");
+	ImGui::PushID("Hierarchy");
 
 	auto& entityArray = m_parentScene->getAllEntityArray();
 
@@ -32,6 +33,7 @@ void Editor::draw() {
 		}
 	}
 
+	ImGui::PopID();
 	ImGui::End();
 
 	// Component Editor

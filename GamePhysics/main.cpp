@@ -42,7 +42,7 @@ int main() {
 	auto eventHandler = std::make_unique<EventHandler>();
 	Scene scene(std::move(entityManager), std::move(eventHandler));
 
-	//-------------------------------initialize ImGui-------------------------------//
+	//-------------------------------initialize GUIs-------------------------------//
 	ImGuiLayer guiLayer(&window);
 	SceneWindow sceneWindow(800, 600, "Kikurage");
 	Editor editor(&scene);
@@ -107,7 +107,6 @@ int main() {
 			window.Clear();
 			{
 				guiLayer.begin();
-				sceneWindow.update();
 
 				{
 					window.BindFBO();

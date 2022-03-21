@@ -6,7 +6,7 @@ class CameraComponent : public Component {
 public:
 	float Yaw = -90.0f;
 	float Pitch = 0.0f;
-	float MovementSpeed = 2.5f;
+	float MovementSpeed = 5.0f;
 	float MouseSensitivity = 0.1f;
 	float Zoom = 45.0f;
 

@@ -13,11 +13,15 @@ SceneWindow::SceneWindow(int width, int height, const char* title) {
 	m_title = title;
 }
 
-void SceneWindow::update() {
+void SceneWindow::draw(unsigned int renderTexture) {
+	// Scene Window
+	ImGui::Begin("Scene", nullptr, ImGuiWindowFlags_NoScrollbar);
+	ImGui::PushID("Scene");
+
 	// mouse
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
 
-	if (io.WantCaptureMouse) {
+	if (ImGui::IsWindowHovered()) {
 		for (size_t i = 0; i < 5; i++) {
 			m_mouseHeld[i] = ImGui::IsMouseDown(i);
 			m_mousePressed[i] = ImGui::IsMouseClicked(i);
@@ -25,23 +29,20 @@ void SceneWindow::update() {
 		}
 		m_cursorPos[0] = io.MousePos.x;
 		m_cursorPos[1] = io.MousePos.y;
-
-		// key
-		for (ImGuiKey key = 0; key < 350; key++) {
-			m_keyHeld[key] = ImGui::IsKeyDown(key);
-			m_keyPressed[key] = ImGui::IsKeyPressed(key);
-			m_keyReleased[key] = ImGui::IsKeyReleased(key);
-		}
 	}
-}
 
-void SceneWindow::draw(unsigned int renderTexture) {
-	// Scene Window
-	ImGui::Begin("Scene", nullptr, ImGuiWindowFlags_NoScrollbar);
+	// key
+	for (ImGuiKey key = 0; key < 350; key++) {
+		m_keyHeld[key] = ImGui::IsKeyDown(key);
+		m_keyPressed[key] = ImGui::IsKeyPressed(key);
+		m_keyReleased[key] = ImGui::IsKeyReleased(key);
+	}
+
 	// window size
 	m_width = ImGui::GetWindowWidth();
 	m_height = ImGui::GetWindowHeight();
+	ImGui::Image((void*)renderTexture, ImVec2(m_width, m_height), ImVec2(0, (float)m_height / 1080), ImVec2((float)m_width / 1920, 0));
 
-	ImGui::Image((void*)(intptr_t)renderTexture, ImVec2(m_width, m_height), ImVec2(0, (float)m_height / 1080), ImVec2((float)m_width / 1920, 0));
+	ImGui::PopID();
 	ImGui::End();
 }
