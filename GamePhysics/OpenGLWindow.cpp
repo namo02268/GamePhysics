@@ -1,32 +1,35 @@
-﻿#include "Window.h"
+﻿#include "OpenGLWindow.h"
 
-Window::Window(int width, int height, const char* title)
-	: m_width(width), m_height(height), m_title(title)
-{
+OpenGLWindow::OpenGLWindow(int width, int height, const char* title) {
+	m_width = width;
+	m_height = height;
+	m_title = title;
 	Init();
 	MakeFBO();
 }
 
-Window::~Window() { Terminate(); }
+OpenGLWindow::~OpenGLWindow() { Terminate(); }
 
-void Window::Clear() {
+void OpenGLWindow::Clear() {
 	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void Window::Update() {
+void OpenGLWindow::Update() {
 	this->anyKeyEvent = false;
 	this->anyMouseEvent = false;
+	glfwGetCursorPos(m_window, &m_cursorPos[0], &m_cursorPos[1]);
 	glfwSwapBuffers(m_window);
 	glfwPollEvents();
 }
 
-void Window::Init() {
+void OpenGLWindow::Init() {
 	// initialize GLFW
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); 
 #ifdef __APPLE__
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
@@ -42,7 +45,7 @@ void Window::Init() {
 
 	glfwSetFramebufferSizeCallback(m_window, [](GLFWwindow* w, int width, int height) {
 		glViewport(0, 0, width, height);
-		Window& window = *(Window*)glfwGetWindowUserPointer(w);
+		OpenGLWindow& window = *(OpenGLWindow*)glfwGetWindowUserPointer(w);
 		window.m_width = width;
 		window.m_height = height;
 		});
@@ -52,7 +55,7 @@ void Window::Init() {
 		{
 			if (action == GLFW_REPEAT) return;
 
-			Window& window = *(Window*)glfwGetWindowUserPointer(w);
+			OpenGLWindow& window = *(OpenGLWindow*)glfwGetWindowUserPointer(w);
 			if ((size_t)key >= 350) return; // TODO: handle all key input
 			window.m_keyPressed[(size_t)key] = (action == GLFW_PRESS);
 			window.m_keyReleased[(size_t)key] = (action == GLFW_RELEASE);
@@ -65,7 +68,7 @@ void Window::Init() {
 		{
 			if (action == GLFW_REPEAT) return;
 
-			Window& window = *(Window*)glfwGetWindowUserPointer(w);
+			OpenGLWindow& window = *(OpenGLWindow*)glfwGetWindowUserPointer(w);
 			if (button >= 8) return;
 			window.m_mousePressed[(size_t)button] = (action == GLFW_PRESS);
 			window.m_mouseReleased[(size_t)button] = (action == GLFW_RELEASE);
@@ -75,7 +78,7 @@ void Window::Init() {
 
 	// mouse scroll
 	glfwSetScrollCallback(m_window, [](GLFWwindow* w, double xoffset, double yoffset) {
-		Window& window = *(Window*)glfwGetWindowUserPointer(w);
+		OpenGLWindow& window = *(OpenGLWindow*)glfwGetWindowUserPointer(w);
 		window.m_mouseScroll = yoffset;
 		window.anyMouseEvent = true;
 		});
@@ -93,17 +96,17 @@ void Window::Init() {
 	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 }
 
-void Window::Terminate() {
+void OpenGLWindow::Terminate() {
 	glfwTerminate();
 }
 
-void Window::MakeFBO() {
+void OpenGLWindow::MakeFBO() {
 	glGenFramebuffers(1, &framebuffer);
 	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 	// create a color attachment texture
 	glGenTextures(1, &textureColorbuffer);
 	glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 500, 500, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1920, 1080, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
@@ -111,7 +114,7 @@ void Window::MakeFBO() {
 	unsigned int rbo;
 	glGenRenderbuffers(1, &rbo);
 	glBindRenderbuffer(GL_RENDERBUFFER, rbo);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 500, 500); // use a single renderbuffer object for both a depth AND stencil buffer.
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 1920, 1080); // use a single renderbuffer object for both a depth AND stencil buffer.
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo); // now actually attach it
 	// now that we actually created the framebuffer and added all attachments we want to check if it is actually complete now
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
@@ -119,16 +122,10 @@ void Window::MakeFBO() {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-glm::vec2 Window::GetCursorPosition() const {
-	double x, y;
-	glfwGetCursorPos(m_window, &x, &y);
-	return glm::vec2(float(x), float(y));
-}
-
-void Window::disableMouseCursor() const {
+void OpenGLWindow::disableMouseCursor() const {
 	glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 
-void Window::normalMouseCursor() const {
+void OpenGLWindow::normalMouseCursor() const {
 	glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 }

@@ -10,20 +10,20 @@
 #include "CameraComponent.h"
 
 //----------------------------------------------Base----------------------------------------------//
-class ComponentGUIBase {
+class ComponentEditorBase {
 public:
 	ComponentTypeID ID;
 	Scene* m_parentScene;
 
 public:
-	virtual ~ComponentGUIBase() {}
+	virtual ~ComponentEditorBase() {}
 	virtual void draw(Entity& e) {}
 };
 
 //----------------------------------------------Transform----------------------------------------------//
-class TransfromComponentGUI : public ComponentGUIBase {
+class TransfromEditor : public ComponentEditorBase {
 public:
-	TransfromComponentGUI(Scene* scene) {
+	TransfromEditor(Scene* scene) {
 		m_parentScene = scene;
 		ID = getComponentTypeID<TransformComponent>();
 	}
@@ -42,9 +42,9 @@ public:
 };
 
 //----------------------------------------------Material----------------------------------------------//
-class MaterialComponentGUI : public ComponentGUIBase {
+class MaterialEditor : public ComponentEditorBase {
 public:
-	MaterialComponentGUI(Scene* scene) {
+	MaterialEditor(Scene* scene) {
 		m_parentScene = scene;
 		ID = getComponentTypeID<MaterialComponent>();
 	}
@@ -64,9 +64,9 @@ public:
 };
 
 //----------------------------------------------RigidBody----------------------------------------------//
-class RigidBodyComponentGUI : public ComponentGUIBase {
+class RigidBodyEditor : public ComponentEditorBase {
 public:
-	RigidBodyComponentGUI(Scene* scene) {
+	RigidBodyEditor(Scene* scene) {
 		m_parentScene = scene;
 		ID = getComponentTypeID<RigidBodyComponent>();
 	}
@@ -90,9 +90,9 @@ public:
 };
 
 //----------------------------------------------Camera----------------------------------------------//
-class CameraComponentGUI : public ComponentGUIBase {
+class CameraEditor : public ComponentEditorBase {
 public:
-	CameraComponentGUI(Scene* scene) {
+	CameraEditor(Scene* scene) {
 		m_parentScene = scene;
 		ID = getComponentTypeID<CameraComponent>();
 	}

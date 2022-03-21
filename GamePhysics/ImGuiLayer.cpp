@@ -1,117 +1,110 @@
-#include "GUI.h"
+#include "ImGuiLayer.h"
+
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glfw.h"
+#include "imgui/imgui_impl_opengl3.h"
 
 void imgui_theme();
 
-GUI::~GUI() {
+ImGuiLayer::ImGuiLayer(OpenGLWindow* window) : m_parentWindow(window) {
+	init();
+}
+
+ImGuiLayer::~ImGuiLayer() {
 	// Cleanup
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
 	ImGui::DestroyContext();
 }
 
-void GUI::init() {
+void ImGuiLayer::init() {
 	// init imgui
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
+	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
+	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
+	//io.ConfigViewportsNoAutoMerge = true;
+	//io.ConfigViewportsNoTaskBarIcon = true;
 
-	const char* glsl_version = "#version 330";
+	const char* glsl_version = "#version 130";
 	ImGui_ImplGlfw_InitForOpenGL(m_parentWindow->GetWindow(), true);
 	ImGui_ImplOpenGL3_Init(glsl_version);
 
 	// imgui configuration
 	imgui_theme();
-
-	// add Component GUIs
-	auto transformComponentGUI = std::make_unique<TransfromComponentGUI>(m_parentScene);
-	m_componentGUIbit[transformComponentGUI->ID] = true;
-	auto materialComponentGUI = std::make_unique<MaterialComponentGUI>(m_parentScene);
-	m_componentGUIbit[materialComponentGUI->ID] = true;
-	auto rigidBodyComponentGUI = std::make_unique<RigidBodyComponentGUI>(m_parentScene);
-	m_componentGUIbit[rigidBodyComponentGUI->ID] = true;
-	auto cameraComponentGUI = std::make_unique<CameraComponentGUI>(m_parentScene);
-	m_componentGUIbit[cameraComponentGUI->ID] = true;
-
-	m_componentGUIs[transformComponentGUI->ID] = std::move(transformComponentGUI);
-	m_componentGUIs[materialComponentGUI->ID] = std::move(materialComponentGUI);
-	m_componentGUIs[rigidBodyComponentGUI->ID] = std::move(rigidBodyComponentGUI);
-	m_componentGUIs[cameraComponentGUI->ID] = std::move(cameraComponentGUI);
 }
 
-void GUI::update() {
+void ImGuiLayer::begin() {
 	// Start the Dear ImGui frame
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
 
-	m_parentWindow->BindFBO();
-	m_parentWindow->Clear();
+	// set dockspace
+	DockSpace();
 }
 
-void GUI::draw() {
-	// Scene Window
-	ImGui::Begin("Scene Window");
-	ImVec2 window_size = ImGui::GetWindowSize();
-	ImGui::Image((void*)(intptr_t)m_parentWindow->getRenderTexture(), window_size, ImVec2(0, 1), ImVec2(1, 0));
-	ImGui::End();
-	m_parentWindow->UnbindFBO();
-
-	// Hierarchy
-	ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f));
-	ImGui::SetNextWindowSize(ImVec2(200, m_parentWindow->GetHeight()));
-	ImGui::Begin("Scene", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
-
-	auto& entityArray = m_parentScene->getAllEntityArray();
-
-	static int selected = -1;
-	char buf[32];
-	for (int n = 0; n < entityArray.size(); n++) {
-		sprintf_s(buf, "Entity %d", entityArray[n]);
-		if (ImGui::Selectable(buf, selected == n)) {
-			selected = n;
-		}
-	}
-
-	ImGui::End();
-
-	// Component GUI
-	ImGui::SetNextWindowPos(ImVec2(m_parentWindow->GetWidth() - 400.0f, 0.0f));
-	ImGui::SetNextWindowSize(ImVec2(400.0f, m_parentWindow->GetHeight()));
-	ImGui::Begin("Inspector", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
-	ImGui::PushItemWidth(200);
-
-	if (selected != -1) {
-		ImGui::PushID(entityArray[selected].GetID());
-		for (int i = 0; i < MAX_COMPONENTS_FAMILY; i++) {
-			if (m_parentScene->getComponentMask(entityArray[selected])[i] && m_componentGUIbit[i]) {
-				ImGui::SetNextItemOpen(true, ImGuiCond_Once);
-				m_componentGUIs[i]->draw(entityArray[selected]);
-				ImGui::Separator();
-			}
-		}
-
-		ImGui::PushItemWidth(50.0f);
-		if (ImGui::Button("Add Component"))
-			ImGui::OpenPopup("Component");
-
-		if (ImGui::BeginPopup("Component"))
-		{
-			if (ImGui::Selectable("Transform"))
-				m_parentScene->addComponent<TransformComponent>(entityArray[selected]);
-			if (ImGui::Selectable("Material"))
-				m_parentScene->addComponent<MaterialComponent>(entityArray[selected]);
-			if (ImGui::Selectable("RigidBody"))
-				m_parentScene->addComponent<RigidBodyComponent>(entityArray[selected]);
-			ImGui::EndPopup();
-		}
-		ImGui::PopID();
-	}
-
-	ImGui::PopItemWidth();
-	ImGui::End();
-
+void ImGuiLayer::end() {
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+	if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+	{
+		GLFWwindow* backup_current_context = glfwGetCurrentContext();
+		ImGui::UpdatePlatformWindows();
+		ImGui::RenderPlatformWindowsDefault();
+		glfwMakeContextCurrent(backup_current_context);
+	}
+}
+
+void ImGuiLayer::DockSpace() {
+	// Dock Space
+	{
+		static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
+
+		ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
+		const ImGuiViewport* viewport = ImGui::GetMainViewport();
+		ImGui::SetNextWindowPos(viewport->WorkPos);
+		ImGui::SetNextWindowSize(viewport->WorkSize);
+		ImGui::SetNextWindowViewport(viewport->ID);
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+		window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+		window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
+
+		if (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode)
+			window_flags |= ImGuiWindowFlags_NoBackground;
+
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+		ImGui::Begin("DockSpace", nullptr, window_flags);
+		ImGui::PopStyleVar();
+
+		ImGui::PopStyleVar(2);
+
+		// Submit the DockSpace
+		ImGuiIO& io = ImGui::GetIO();
+		if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
+		{
+			ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
+			ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
+		}
+
+		if (ImGui::BeginMenuBar())
+		{
+			if (ImGui::BeginMenu("Menu"))
+			{
+				ImGui::MenuItem("test", NULL);
+				ImGui::EndMenu();
+			}
+
+			ImGui::EndMenuBar();
+		}
+
+		ImGui::End();
+	}
 }
 
 void imgui_theme() {
@@ -176,5 +169,4 @@ void imgui_theme() {
 	style.TabBorderSize = 1.0f;
 	style.TabRounding = 0.0f;
 	style.WindowRounding = 4.0f;
-
 }

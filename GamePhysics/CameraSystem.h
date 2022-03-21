@@ -3,6 +3,7 @@
 #include "System.h"
 #include "Window.h"
 #include "Shader.h"
+#include <GLFW/glfw3.h>
 
 class CameraSystem : public System {
 private:

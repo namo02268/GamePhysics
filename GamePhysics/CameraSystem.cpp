@@ -45,38 +45,38 @@ void CameraSystem::update(float dt) {
 
 		// key input
 		float velocity = cameraComponent->MovementSpeed * dt;
-		if (m_window->IsKeyPressed(GLFW_KEY_W))
+		if (m_window->IsKeyHeld(GLFW_KEY_W))
 			transfromComponent->position += cameraComponent->Front * velocity;
-		if (m_window->IsKeyPressed(GLFW_KEY_S))
+		if (m_window->IsKeyHeld(GLFW_KEY_S))
 			transfromComponent->position -= cameraComponent->Front * velocity;
-		if (m_window->IsKeyPressed(GLFW_KEY_A))
+		if (m_window->IsKeyHeld(GLFW_KEY_A))
 			transfromComponent->position -= cameraComponent->Right * velocity;
-		if (m_window->IsKeyPressed(GLFW_KEY_D))
+		if (m_window->IsKeyHeld(GLFW_KEY_D))
 			transfromComponent->position += cameraComponent->Right * velocity;
-		if (m_window->IsKeyPressed(GLFW_KEY_SPACE))
+		if (m_window->IsKeyHeld(GLFW_KEY_SPACE))
 			transfromComponent->position += cameraComponent->Up * velocity;
-		if (m_window->IsKeyPressed(GLFW_KEY_LEFT_SHIFT))
+		if (m_window->IsKeyHeld(GLFW_KEY_LEFT_SHIFT))
 			transfromComponent->position -= cameraComponent->Up * velocity;
 
 		// mouse input
-		if (m_window->IsMousePressed(GLFW_MOUSE_BUTTON_RIGHT)) {
-			glm::vec2 mousePos = m_window->GetCursorPosition();
+		if (m_window->IsMouseHeld(GLFW_MOUSE_BUTTON_RIGHT)) {
+			auto mousePos = m_window->GetCursorPos();
 			if (firstMouse)
 			{
-				lastX = mousePos.x;
-				lastY = mousePos.y;
+				lastX = mousePos[0];
+				lastY = mousePos[1];
 				firstMouse = false;
 //				std::cout << "first mouse" << std::endl;
 			}
 
 
-			m_window->disableMouseCursor();
-			float xoffset = mousePos.x - lastX;
-			float yoffset = lastY - mousePos.y;
+//			m_window->disableMouseCursor();
+			float xoffset = mousePos[0] - lastX;
+			float yoffset = lastY - mousePos[1];
 //			std::cout << xoffset << " : " << mousePos.x << " : " << lastX << std::endl;
 
-			lastX = mousePos.x;
-			lastY = mousePos.y;
+			lastX = mousePos[0];
+			lastY = mousePos[1];
 
 			xoffset *= cameraComponent->MouseSensitivity;
 			yoffset *= cameraComponent->MouseSensitivity;
@@ -93,12 +93,14 @@ void CameraSystem::update(float dt) {
 		}
 		else {
 			firstMouse = true;
-			m_window->normalMouseCursor();
+//			m_window->normalMouseCursor();
 		}
 	}
 }
 
 void CameraSystem::draw() {
+	glViewport(0, 0, m_window->GetWidth(), m_window->GetHeight());
+
 	for (auto& e : m_entityArray) {
 		auto transfromComponent = m_parentScene->getComponent<TransformComponent>(e);
 		auto cameraComponent = m_parentScene->getComponent<CameraComponent>(e);

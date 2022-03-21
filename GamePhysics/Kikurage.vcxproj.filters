@@ -40,11 +40,11 @@
     <Filter Include="ソース ファイル\Systems\Collision">
       <UniqueIdentifier>{edad23e2-6102-41d8-b551-4dc91f5a6a7f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\GUI">
-      <UniqueIdentifier>{577512f0-be71-48bb-a717-818ef8d87be3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Systems\MeshRenderer">
       <UniqueIdentifier>{12d2f984-e790-4f3b-af9e-e7c2e45a3e72}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Editor">
+      <UniqueIdentifier>{577512f0-be71-48bb-a717-818ef8d87be3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -99,7 +99,7 @@
     <ClInclude Include="EventHandler.h">
       <Filter>ソース ファイル\ECS</Filter>
     </ClInclude>
-    <ClInclude Include="Window.h">
+    <ClInclude Include="OpenGLWindow.h">
       <Filter>ソース ファイル</Filter>
     </ClInclude>
     <ClInclude Include="MaterialComponent.h">
@@ -180,11 +180,20 @@
     <ClInclude Include="SphereColliderComponent.h">
       <Filter>ソース ファイル\Components</Filter>
     </ClInclude>
-    <ClInclude Include="ComponentGUIs.h">
-      <Filter>ソース ファイル\GUI</Filter>
+    <ClInclude Include="ComponentEditors.h">
+      <Filter>ソース ファイル\Editor</Filter>
     </ClInclude>
-    <ClInclude Include="GUI.h">
-      <Filter>ソース ファイル\GUI</Filter>
+    <ClInclude Include="Editor.h">
+      <Filter>ソース ファイル\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Window.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneWindow.h">
+      <Filter>ソース ファイル\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGuiLayer.h">
+      <Filter>ソース ファイル\Editor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -203,7 +212,7 @@
     <ClCompile Include="Texture2D.cpp">
       <Filter>ソース ファイル\Resource</Filter>
     </ClCompile>
-    <ClCompile Include="Window.cpp">
+    <ClCompile Include="OpenGLWindow.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="imgui\imgui.cpp">
@@ -251,8 +260,14 @@
     <ClCompile Include="CollisionSystem.cpp">
       <Filter>ソース ファイル\Systems\Collision</Filter>
     </ClCompile>
-    <ClCompile Include="GUI.cpp">
-      <Filter>ソース ファイル\GUI</Filter>
+    <ClCompile Include="Editor.cpp">
+      <Filter>ソース ファイル\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneWindow.cpp">
+      <Filter>ソース ファイル\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGuiLayer.cpp">
+      <Filter>ソース ファイル\Editor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

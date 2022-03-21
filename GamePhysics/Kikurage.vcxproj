@@ -26,10 +26,11 @@
     <ClInclude Include="CollisionEvent.h" />
     <ClInclude Include="CollisionPoints.h" />
     <ClInclude Include="CollisionSystem.h" />
-    <ClInclude Include="GUI.h" />
+    <ClInclude Include="Editor.h" />
+    <ClInclude Include="ImGuiLayer.h" />
     <ClInclude Include="Physics.h" />
     <ClInclude Include="Component.h" />
-    <ClInclude Include="ComponentGUIs.h" />
+    <ClInclude Include="ComponentEditors.h" />
     <ClInclude Include="ComponentManager.h" />
     <ClInclude Include="CubaMap.h" />
     <ClInclude Include="ECS_def.h" />
@@ -56,6 +57,7 @@
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="RigidBodyComponent.h" />
     <ClInclude Include="Scene.h" />
+    <ClInclude Include="SceneWindow.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="MeshComponent.h" />
     <ClInclude Include="SphereCollider.h" />
@@ -64,12 +66,14 @@
     <ClInclude Include="System.h" />
     <ClInclude Include="Texture2D.h" />
     <ClInclude Include="TransformComponent.h" />
+    <ClInclude Include="OpenGLWindow.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CameraSystem.cpp" />
     <ClCompile Include="CollisionSystem.cpp" />
-    <ClCompile Include="GUI.cpp" />
+    <ClCompile Include="Editor.cpp" />
+    <ClCompile Include="ImGuiLayer.cpp" />
     <ClCompile Include="Physics.cpp" />
     <ClCompile Include="CubaMap.cpp" />
     <ClCompile Include="glad.c" />
@@ -85,10 +89,11 @@
     <ClCompile Include="PlaneCollider.cpp" />
     <ClCompile Include="MeshRenderer.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
+    <ClCompile Include="SceneWindow.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="SphereCollider.cpp" />
     <ClCompile Include="Texture2D.cpp" />
-    <ClCompile Include="Window.cpp" />
+    <ClCompile Include="OpenGLWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\background.frag" />
@@ -216,7 +221,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;IMGUI_IMPL_OPENGL_LOADER_GL3W;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>IMGUI_IMPL_OPENGL_LOADER_GL3W;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
